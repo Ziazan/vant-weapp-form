@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:46:34
- * @LastEditTime: 2024-12-22 00:15:48
+ * @LastEditTime: 2024-12-22 00:54:43
  * @Description: 请填写简介
 -->
 <!-- form-item -->
@@ -48,7 +48,7 @@ interface FromItemProps {
   max:number;
   type: string;
 }
-const instance = getCurrentInstance()
+const formItemInstance = getCurrentInstance()
 
 const props = defineProps<FromItemProps>()
 const formContext = inject('form') as any;
@@ -106,7 +106,6 @@ const validate = async (trigger: string = '', callback = noop)=>{
 }
 
 const fieldValue = computed(()=>{
-  //TODO: 层级深时触发不了变更？？
   const model = formModel.value;
   if (!model || !name.value) { return; }
 
@@ -114,7 +113,7 @@ const fieldValue = computed(()=>{
   if (path.indexOf(':') !== -1) {
     path = path.replace(/:/, '.');
   }
-  return model[path];
+  return getPropByPath(model, path, true).v;
 })
 
 watch(()=>fieldValue.value, ()=>{
@@ -122,11 +121,11 @@ watch(()=>fieldValue.value, ()=>{
 })
 
 onMounted(()=>{
-  formContext.exposed?.registerField(instance)
+  formContext.exposed?.registerField(formItemInstance)
 })
 
 onUnmounted(() => {
-  formContext.exposed?.removeField(instance)
+  formContext.exposed?.removeField(formItemInstance)
 })
 
 defineExpose({
