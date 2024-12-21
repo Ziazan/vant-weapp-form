@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:45:24
- * @LastEditTime: 2024-12-21 23:07:37
+ * @LastEditTime: 2024-12-21 23:15:23
  * @Description: 请填写简介
 -->
 <!-- form -->
@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { toRefs,reactive,provide, ref, computed } from 'vue';
 import type { ComponentInternalInstance } from 'vue';
-import objectAssign from './merge'
+import { objectAssign } from './utils'
 
 type RuleItemType = Record<string, any>
 

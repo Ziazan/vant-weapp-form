@@ -85,7 +85,7 @@
 	"easycom": {
   "autoscan": true,
   "custom": {
-    "^lc-(.*)": "@/components/lc-$1/lc-$1.vue"
+    "^lc-(.*)": "@/components/lc-$1/lc-$1.*"
   }
 }
 }
