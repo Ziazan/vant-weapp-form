@@ -6,7 +6,7 @@
 <!-- form -->
 <template>
   <div class="container" >
-    <lc-form v-model="formModel" :rules="rules" @submit="handSubmit" ref="formRef">
+    <lc-form :model="formModel" :rules="rules" @submit="handSubmit" ref="formRef">
       <lc-form-item name="input" label="input" required v-slot="{ validate }">
         <input  v-model="formModel.input" placeholder="自动获得焦点" @blur="validate" />
       </lc-form-item>

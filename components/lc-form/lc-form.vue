@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:45:24
- * @LastEditTime: 2024-12-21 14:42:25
+ * @LastEditTime: 2024-12-21 16:33:23
  * @Description: 请填写简介
 -->
 <!-- form -->
@@ -15,15 +15,15 @@ import { toRefs,reactive,provide, toRaw } from 'vue';
 import AsyncValidator from 'async-validator';
 
 interface FromPropsType {
-  modelValue: Object,
+  model: Object,
   rules: Record<string, any>
 }
 
-const emits = defineEmits(['submit','failed','update:modelValue']);
+const emits = defineEmits(['submit','failed']);
 const props = defineProps<FromPropsType>()
-const { modelValue, rules } = toRefs(props);
+const { model, rules } = toRefs(props);
 const formState = reactive({
-  model: modelValue.value,
+  model: model.value,
   errors: {} as Record<string, string[]>,
   isSubmitting: false,
 });
@@ -34,13 +34,12 @@ const validate = async (key?:string) => {
   let validateData = {};
   if(key){
     description[key] = rules.value[key];
-    validateData[key] = modelValue.value?.[key];
+    validateData[key] = model.value?.[key];
   }else{
     description =  toRaw(rules.value);
-    validateData = toRaw(modelValue.value);
+    validateData = toRaw(model.value);
   }
   const validator = new AsyncValidator(description);
-  console.log('%c [ validateData ]-44', 'font-size:13px; background:pink; color:#bf2c9f;', validateData)
   try {
     await validator.validate(validateData);
     formState.errors = {}; // 清空错误信息
