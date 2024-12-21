@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:45:24
- * @LastEditTime: 2024-12-21 17:47:12
+ * @LastEditTime: 2024-12-21 23:07:37
  * @Description: 请填写简介
 -->
 <!-- form -->
@@ -11,8 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs,reactive,provide, toRaw } from 'vue';
-import AsyncValidator from 'async-validator';
+import { toRefs,reactive,provide, ref, computed } from 'vue';
+import type { ComponentInternalInstance } from 'vue';
+import objectAssign from './merge'
 
 type RuleItemType = Record<string, any>
 
@@ -28,49 +29,84 @@ const formState = reactive({
   errors: {} as Record<string, string[]>,
   isSubmitting: false,
 });
+const fields = ref<ComponentInternalInstance[]>([]);
 
-const getFilteredRule = (rules: RuleItemType = [], trigger?: string)=>{
-  return rules?.filter(rule => {
-    if (!rule.trigger || trigger === '') return true;
-    if (Array.isArray(rule.trigger)) {
-      return rule.trigger.indexOf(trigger) > -1;
-    } else {
-      return rule.trigger === trigger;
-    }
-  });
+const registerField = (field: ComponentInternalInstance) => {
+  if(field){
+    fields.value.push(field);
+  }
+}
+
+const removeField = (field) =>{
+  if (field.name) {
+    fields.value.splice(fields.value.indexOf(field), 1);
+  }
+}
+
+const getFieldValidateFn = (field: ComponentInternalInstance)=>{
+  return field.exposed?.validate
+}
+
+const getFieldProps = (field: ComponentInternalInstance)=>{
+  return field.props
 }
 
 // 用来验证表单
-const validate = async (trigger?: string, key?:string) => {
-  let description = {};
-  
-  // rules
-  if(key){
-    if(!rules.value[key]?.length) return ;
-    const _rules = getFilteredRule(rules.value[key], trigger);
-    description[key] = _rules;
-  }else{
-    description =  rules.value;
+const validate = async (callback?:any) => {
+  if (!model.value) {
+    console.warn('[Warn][Form]model is required for validate to work!');
+    return;
   }
-  let validateData = {};
-  if(key){
-    validateData[key] = model.value?.[key];
-  }else{
-    validateData = toRaw(model.value);
+
+  let promise;
+  if(typeof callback !== 'function' && Promise){
+    promise = new Promise((resolve, reject)=>{
+      callback = function(valid, invalidFields){
+        valid? resolve(valid): reject(invalidFields)
+      }
+    })
   }
-  const validator = new AsyncValidator(description);
-  try {
-    await validator.validate(validateData);
-    formState.errors = {}; // 清空错误信息
-    console.log('===>验证正常')
-    return true;
-  } catch ({ errors, fields }) {
-    console.log('Validation failed:', errors);
-    console.log('Field-specific errors:', fields);
-    formState.errors = fields
-    return false;
+  let valid = true;
+  let count = 0;
+  if(fields.value?.length === 0 && callback){
+    callback(true)
+  }
+
+  let invalidFields = {};
+  fields.value.forEach(field => {
+    const fieldValidateFn = getFieldValidateFn(field);
+    fieldValidateFn('', (message, invalidField) =>{
+      if (message) {
+        valid = false;
+      }
+      invalidFields = objectAssign({}, invalidFields, invalidField);
+      if (typeof callback === 'function' && ++count === fields.value.length) {
+        callback(valid, invalidFields);
+      }
+    })
+  })
+
+  if (promise) {
+    return promise;
   }
 };
+
+const validateField = (props, cb) => {
+  props = [].concat(props);
+  const _fields = fields.value.filter(field => {
+    const fieldProps = getFieldProps(field);
+    return props.indexOf(fieldProps.name) !== -1
+  });
+  if (!_fields.length) {
+    console.warn('[Warn]please pass correct props!');
+    return;
+  }
+
+  _fields.forEach(field => {
+    const validateFn = getFieldValidateFn(field);
+    validateFn('', cb);
+  });
+}
 
 const onSubmit = (e: Event )=>{
   emits('submit')
@@ -86,8 +122,10 @@ const submit = async () => {
 
 provide('form', {
   formState,
-  model,
+  model: computed(()=>model.value),
   rules,
+  registerField,
+  removeField,
   submit,
   validate,
 });
@@ -95,6 +133,7 @@ provide('form', {
 defineExpose({
   submit,
   validate,
+  validateField,
   formState
 })
 
