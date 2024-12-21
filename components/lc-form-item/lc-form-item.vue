@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:46:34
- * @LastEditTime: 2024-12-21 23:08:26
+ * @LastEditTime: 2024-12-21 23:40:13
  * @Description: 请填写简介
 -->
 <!-- form-item -->
@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { ref, inject, toRefs, computed, toRaw, watch, onMounted, onUnmounted, getCurrentInstance } from 'vue';
-import {noop, getPropByPath, objectAssign} from './utils'
+import {noop, getPropByPath, objectAssign} from '../lc-form/utils'
 import AsyncValidator from 'async-validator';
 type RuleItemType = Partial<{
   required?: boolean;
@@ -52,7 +52,7 @@ const instance = getCurrentInstance()
 
 const props = defineProps<FromItemProps>()
 const formContext = inject('form') as any;
-const {model: formModel,rules: formRules} = toRefs(formContext);
+const {model: formModel,rules: formRules} = toRefs(formContext.ctx);
 const { name, required, rules: propsRules } = toRefs(props);
 
 // 获取字段的错误信息
@@ -101,8 +101,7 @@ const validate = async (trigger: string = '', callback = noop)=>{
     validateMessage.value = errors ? errors[0].message || '' : '';
 
     callback(validateMessage.value, invalidFields);
-    //TODO
-    // formContext && formContext.validate(name.value, !errors, validateMessage.value || null)
+    formContext && formContext.emit('validate', name.value, !errors, validateMessage.value || null)
   });
 }
 
@@ -122,11 +121,11 @@ watch(()=>fieldValue.value, ()=>{
 })
 
 onMounted(()=>{
-  formContext.registerField(instance)
+  formContext.exposed?.registerField(instance)
 })
 
 onUnmounted(() => {
-  formContext.removeField(instance)
+  formContext.exposed?.removeField(instance)
 })
 
 defineExpose({

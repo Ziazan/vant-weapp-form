@@ -1,12 +1,12 @@
 <!--
  * @Date: 2024-12-21 12:48:01
- * @LastEditTime: 2024-12-21 23:06:53
+ * @LastEditTime: 2024-12-21 23:37:53
  * @Description: 请填写简介
 -->
 <!-- form -->
 <template>
   <div class="container" >
-    <lc-form :model="formModel" :rules="rules" @submit="handSubmit" ref="formRef">
+    <lc-form :model="formModel" :rules="rules" @submit="handSubmit" ref="formRef" @validate="onValidate">
       <lc-form-item name="input" label="input" required v-slot="{ validate }" :rules="fieldRules.input">
         <input  v-model="formModel.input" placeholder="自动获得焦点"/>
       </lc-form-item>
@@ -136,6 +136,10 @@ const handSubmit = async ()=>{
   }).catch(invalidFields =>{
     console.log('%c [ invalidFields ]-128', 'font-size:13px; background:pink; color:#bf2c9f;', invalidFields)
   });
+}
+
+const onValidate = (name, status, errorMessage)=>{
+  console.log('%c [ name, status, errorMessage ]-142', 'font-size:13px; background:pink; color:#bf2c9f;', name, status, errorMessage)
 }
 
 </script>

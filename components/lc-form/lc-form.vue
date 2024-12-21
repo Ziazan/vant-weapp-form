@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:45:24
- * @LastEditTime: 2024-12-21 23:15:23
+ * @LastEditTime: 2024-12-21 23:35:07
  * @Description: 请填写简介
 -->
 <!-- form -->
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs,reactive,provide, ref, computed } from 'vue';
+import { toRefs,reactive,provide, ref, getCurrentInstance } from 'vue';
 import type { ComponentInternalInstance } from 'vue';
 import { objectAssign } from './utils'
 
@@ -21,8 +21,9 @@ interface FromPropsType {
   model: Object,
   rules: RuleItemType[]
 }
+const formInstance = getCurrentInstance()
 
-const emits = defineEmits(['submit','failed']);
+const emits = defineEmits(['submit','failed','validate']);
 const props = defineProps<FromPropsType>()
 const { model, rules } = toRefs(props);
 const formState = reactive({
@@ -120,21 +121,14 @@ const submit = async () => {
   return isValid;
 };
 
-provide('form', {
-  formState,
-  model: computed(()=>model.value),
-  rules,
-  registerField,
-  removeField,
-  submit,
-  validate,
-});
+provide('form', formInstance);
 
 defineExpose({
   submit,
   validate,
   validateField,
-  formState
+  registerField,
+  removeField,
 })
 
 </script>
