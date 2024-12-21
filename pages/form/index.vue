@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:48:01
- * @LastEditTime: 2024-12-21 23:37:53
+ * @LastEditTime: 2024-12-21 23:48:36
  * @Description: 请填写简介
 -->
 <!-- form -->
@@ -110,9 +110,8 @@ const rules = ref({
     { type: 'number', required: true, message: 'radio is required'},
   ],
   picker:[
-    { min:4,  message: 'must be at least 4 characters', trigger:'input' },
     { required: true, message: 'picker is required'},
-    { min:3,  message: 'must be at least 3 characters'},
+    { min:2,  message: 'must be at least 3 characters'},
   ],
   calendar:[
     { required: true, message: 'calendar is required', trigger:'change'},
@@ -131,11 +130,12 @@ const formatDate = (date) => {
   }
 
 const handSubmit = async ()=>{
-  await formRef.value.validate().then((valid)=>{
-    console.log('Form submitted:', formModel.value);
-  }).catch(invalidFields =>{
+  const valid = await formRef.value.validate().catch(invalidFields =>{
     console.log('%c [ invalidFields ]-128', 'font-size:13px; background:pink; color:#bf2c9f;', invalidFields)
   });
+  if(valid){
+    console.log('Form submitted:', formModel.value);
+  }
 }
 
 const onValidate = (name, status, errorMessage)=>{

@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:45:24
- * @LastEditTime: 2024-12-21 23:35:07
+ * @LastEditTime: 2024-12-21 23:44:01
  * @Description: 请填写简介
 -->
 <!-- form -->
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs,reactive,provide, ref, getCurrentInstance } from 'vue';
+import { toRefs,reactive,provide, ref, toRaw, getCurrentInstance } from 'vue';
 import type { ComponentInternalInstance } from 'vue';
 import { objectAssign } from './utils'
 
@@ -110,7 +110,11 @@ const validateField = (props, cb) => {
 }
 
 const onSubmit = (e: Event )=>{
-  emits('submit')
+  validate().then(()=>{
+    emits('submit', toRaw(model.value))
+  }).catch(errors =>{
+    emits('failed', errors);
+  })
 }
 
 // 提交表单
