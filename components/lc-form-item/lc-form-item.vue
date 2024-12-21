@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:46:34
- * @LastEditTime: 2024-12-21 23:40:13
+ * @LastEditTime: 2024-12-22 00:15:48
  * @Description: 请填写简介
 -->
 <!-- form-item -->
@@ -106,6 +106,7 @@ const validate = async (trigger: string = '', callback = noop)=>{
 }
 
 const fieldValue = computed(()=>{
+  //TODO: 层级深时触发不了变更？？
   const model = formModel.value;
   if (!model || !name.value) { return; }
 

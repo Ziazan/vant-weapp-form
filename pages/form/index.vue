@@ -1,12 +1,18 @@
 <!--
  * @Date: 2024-12-21 12:48:01
- * @LastEditTime: 2024-12-21 23:48:36
+ * @LastEditTime: 2024-12-22 00:16:19
  * @Description: 请填写简介
 -->
 <!-- form -->
 <template>
   <div class="container" >
     <lc-form :model="formModel" :rules="rules" @submit="handSubmit" ref="formRef" @validate="onValidate">
+      <lc-form-item name="user.name" label="user.name" required v-slot="{ validate }" :rules="fieldRules.userName">
+        <input  v-model="formModel.user.name" placeholder="用户信息"/>
+      </lc-form-item>
+      <lc-form-item name="list[0].index" label="list[0].index" required v-slot="{ validate }" :rules="fieldRules.list">
+        <input  v-model="formModel.list[0].index" placeholder="list[0].index"/>
+      </lc-form-item>
       <lc-form-item name="input" label="input" required v-slot="{ validate }" :rules="fieldRules.input">
         <input  v-model="formModel.input" placeholder="自动获得焦点"/>
       </lc-form-item>
@@ -81,18 +87,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 interface RegisterModel {
-  input: string;
-  checkbox: boolean;
-  picker: string;
-  radio:string;
-  uploader: {url:string,name:string,isImage?:boolean,deletable?:boolean}[];
-  calendar:string;
+  input?: string;
+  checkbox?: boolean;
+  picker?: string;
+  radio?:string;
+  uploader?: {url:string,name:string,isImage?:boolean,deletable?:boolean}[];
+  calendar?:string;
+  user:{
+    name?:string,
+  },
+  list: {
+    index: string
+  }[]
 }
 
-const formModel = ref<RegisterModel>({})
+const formModel = ref<RegisterModel>({
+  user:{
+    name:'12',
+  },
+  list:[{
+    index: '',
+  }]
+})
 const formRef = ref();
 const isShowPicker = ref(false);
 const isShowCalendar = ref(false);
@@ -115,13 +134,20 @@ const rules = ref({
   ],
   calendar:[
     { required: true, message: 'calendar is required', trigger:'change'},
-  ]
+  ],
+  
 });
 
 const fieldRules = ref({
   input: [
     { type:'string', max: 5, message: 'input field max rules'},
   ],
+  userName: [
+    { required: true, min: 3, message: 'user.name must be at least 3 characters', trigger:'change'},
+  ],
+  list: [
+    { required: true, min: 3, message: 'list value must be at least 3 characters', trigger:'change'},
+  ]
 })
 
 const formatDate = (date) => {
