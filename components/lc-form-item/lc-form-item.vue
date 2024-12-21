@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:46:34
- * @LastEditTime: 2024-12-21 16:24:34
+ * @LastEditTime: 2024-12-21 17:18:58
  * @Description: 请填写简介
 -->
 <!-- form-item -->
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, toRefs,computed } from 'vue';
+import { inject, toRefs, computed, watch } from 'vue';
 import type { PropType } from 'vue'
 
 interface FromItemProps {
@@ -39,7 +39,7 @@ interface FromItemProps {
 }
 const props = defineProps<FromItemProps>()
 const formContext = inject('form') as any;
-const { formState } = toRefs(formContext);
+const { formState, model, rules } = toRefs(formContext);
 const { name, required } = toRefs(props);
 
 // 获取字段的错误信息
@@ -49,10 +49,17 @@ const errorMessage = computed(() => {
 });
 const isError = computed(() => errorMessage.value.length > 0);
 
-const validate = ()=>{
-  console.log('%c [ name.value ]-51', 'font-size:13px; background:pink; color:#bf2c9f;', name.value)
-  formContext.validate(name.value)
+const validate = (trigger?: string)=>{
+  formContext.validate(trigger, name.value)
 }
+
+const fieldValue = computed(()=>{
+  return model.value[name.value]
+})
+
+watch(()=>fieldValue.value, ()=>{
+  validate('change');
+})
 </script>
 
 <style lang="scss" scoped>

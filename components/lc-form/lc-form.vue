@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:45:24
- * @LastEditTime: 2024-12-21 16:33:23
+ * @LastEditTime: 2024-12-21 17:47:12
  * @Description: 请填写简介
 -->
 <!-- form -->
@@ -14,29 +14,48 @@
 import { toRefs,reactive,provide, toRaw } from 'vue';
 import AsyncValidator from 'async-validator';
 
+type RuleItemType = Record<string, any>
+
 interface FromPropsType {
   model: Object,
-  rules: Record<string, any>
+  rules: RuleItemType[]
 }
 
 const emits = defineEmits(['submit','failed']);
 const props = defineProps<FromPropsType>()
 const { model, rules } = toRefs(props);
 const formState = reactive({
-  model: model.value,
   errors: {} as Record<string, string[]>,
   isSubmitting: false,
 });
 
+const getFilteredRule = (rules: RuleItemType = [], trigger?: string)=>{
+  return rules?.filter(rule => {
+    if (!rule.trigger || trigger === '') return true;
+    if (Array.isArray(rule.trigger)) {
+      return rule.trigger.indexOf(trigger) > -1;
+    } else {
+      return rule.trigger === trigger;
+    }
+  });
+}
+
 // 用来验证表单
-const validate = async (key?:string) => {
+const validate = async (trigger?: string, key?:string) => {
   let description = {};
+  
+  // rules
+  if(key){
+    if(!rules.value[key]?.length) return ;
+    const _rules = getFilteredRule(rules.value[key], trigger);
+    description[key] = _rules;
+  }else{
+    description =  rules.value;
+  }
   let validateData = {};
   if(key){
-    description[key] = rules.value[key];
     validateData[key] = model.value?.[key];
   }else{
-    description =  toRaw(rules.value);
     validateData = toRaw(model.value);
   }
   const validator = new AsyncValidator(description);
@@ -54,7 +73,6 @@ const validate = async (key?:string) => {
 };
 
 const onSubmit = (e: Event )=>{
-  e.preventDefault()
   emits('submit')
 }
 
@@ -68,6 +86,8 @@ const submit = async () => {
 
 provide('form', {
   formState,
+  model,
+  rules,
   submit,
   validate,
 });
