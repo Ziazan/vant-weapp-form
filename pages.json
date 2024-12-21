@@ -1,0 +1,79 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	{
+		"path": "pages/form/index",
+		"style": {
+			"navigationBarTitleText": "form"
+		}
+	},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/cate/index",
+			"style": {
+				"navigationBarTitleText": "cate"
+			}
+		},
+		{
+			"path": "pages/user/index",
+			"style": {
+				"navigationBarTitleText": "user"
+			}
+		},
+		{
+			"path": "pages/detail/index",
+			"style": {
+				"navigationBarTitleText": "detail"
+			}
+		},
+		{
+			"path": "pages/info/index",
+			"style": {
+				"navigationBarTitleText": "info"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"usingComponents": {
+			"van-tabbar":"/wxcomponents/node-modules/@vant/weapp/dist/tabbar",
+			"van-tabbar-item":"/wxcomponents/node-modules/@vant/weapp/dist/tabbar-item",
+			"van-card":"/wxcomponents/node-modules/@vant/weapp/dist/card",
+			"van-button":"/wxcomponents/node-modules/@vant/weapp/dist/button",
+			"van-tab": "/wxcomponents/node-modules/@vant/weapp/dist/tab",
+			  "van-tabs": "/wxcomponents/node-modules/@vant/weapp/dist/tabs",
+			  "van-sticky": "/wxcomponents/node-modules/@vant/weapp/dist/sticky",
+				"van-field":"/wxcomponents/node-modules/@vant/weapp/dist/field"
+		}
+	},
+	"tabBar": {
+	"color": "#7A7E83",
+	"selectedColor": "#3cc51f",
+	"borderStyle": "black",
+	"backgroundColor": "#ffffff",
+	"navigationStyle":"custom",
+	"list": [{
+		"pagePath": "pages/form/index"
+	}, {
+		"pagePath": "pages/cate/index"
+	},{
+		"pagePath": "pages/user/index"
+	},{
+		"pagePath": "pages/detail/index"
+	}]
+},
+	"uniIdRouter": {},
+	"easycom": {
+  "autoscan": true,
+  "custom": {
+    "^lc-(.*)": "@/components/lc-$1/lc-$1.vue"
+  }
+}
+}
