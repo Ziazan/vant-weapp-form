@@ -1,26 +1,79 @@
 <!--
  * @Date: 2024-12-21 12:48:01
- * @LastEditTime: 2024-12-21 14:44:33
+ * @LastEditTime: 2024-12-21 16:29:50
  * @Description: 请填写简介
 -->
 <!-- form -->
 <template>
   <div class="container" >
     <lc-form v-model="formModel" :rules="rules" @submit="handSubmit" ref="formRef">
-      <!-- 名称 -->
-      <lc-form-item name="username" label="名称" required v-slot="{ validate }">
-        <input  v-model="formModel.username" placeholder="自动获得焦点" @blur="validate" />
+      <lc-form-item name="input" label="input" required v-slot="{ validate }">
+        <input  v-model="formModel.input" placeholder="自动获得焦点" @blur="validate" />
       </lc-form-item>
-       <!-- 名称 -->
-       <lc-form-item name="age" label="年龄" required v-slot="{ validate }">
-        <input v-model="formModel.age" type="number" placeholder="自动获得焦点" @blur="(event)=>{
-          formModel.age = +event.target.value;
+      <lc-form-item name="checkbox" label="checkbox" required v-slot="{ validate }">
+         <van-checkbox :value="formModel.checkbox" @change="(event)=>{
+          formModel.checkbox = event.detail
+          validate();
+         }">复选框</van-checkbox>
+      </lc-form-item>
+      <!-- 直接监听change的变化 这里无法进行校验-->
+      <lc-form-item name="picker" label="picker" required>
+        <template #default="{ validate }">
+          <button @click="()=>isShowPicker = true">{{ formModel.picker || "请选择"}}></button>
+        </template>
+      </lc-form-item>
+      <lc-form-item name="radio" label="radio" required v-slot="{ validate }">
+        <van-radio-group
+          :value="formModel.radio"
+          @change="(event)=>{
+            formModel.radio = event.detail
+            validate();
+          }"
+          direction="horizontal"
+        >
+          <van-radio :name="1">单选框 1</van-radio>
+          <van-radio :name="2">单选框 2</van-radio>
+        </van-radio-group>
+      </lc-form-item>
+      <lc-form-item name="uploader" label="uploader" required v-slot="{ validate }">
+        <van-uploader :file-list="formModel.uploader" @afterRead="()=>{
+          formModel.uploader = [
+            {
+              url: 'https://img.yzcdn.cn/vant/leaf.jpg',
+              name: '图片1',
+            },
+            {
+              url: 'http://iph.href.lu/60x60?text=default',
+              name: '图片2',
+              isImage: true,
+              deletable: true,
+            }
+          ]
           validate();
         }" />
       </lc-form-item>
+      <lc-form-item name="calendar" label="calendar" required v-slot="{ validate }">
+        <button @click="()=>isShowCalendar = true">{{ formModel.calendar || "请选择日期"}}></button>
+        <!-- <van-cell title="选择单个日期" :value="formModel.calendar" @click="()=>isShowCalendar = true" /> -->
+      </lc-form-item>
       <button @click="handSubmit"> 提交 </button>
     </lc-form>
-
+    <!-- picker -->
+    <van-picker v-if="isShowPicker" :columns="['杭州', '宁波', '温州', '嘉兴', '湖州']" confirm-button-text="确认" cancel-button-text="取消" @change="(event)=>{
+      const { picker, value, index } = event.detail;
+      formModel.picker = value;
+      isShowPicker = false;
+      formRef.validate('picker');
+    }" />
+    <!-- 日历 -->
+    <van-calendar :show="isShowCalendar" @close="()=>{
+      isShowCalendar = false;
+      formRef.validate('calendar');
+    }" @confirm="(event)=>{
+      isShowCalendar = false
+      formModel.calendar =  event.detail;
+      formRef.validate('calendar');
+    }" />
   </div>
 </template>
 
@@ -28,29 +81,35 @@
 import { ref } from 'vue'
 
 interface RegisterModel {
-  username: string;
-  password: string;
-  age?: number;
-  className: string;
+  input: string;
+  checkbox: boolean;
+  picker: string;
+  radio:string;
+  uploader: {url:string,name:string,isImage?:boolean,deletable?:boolean}[];
+  calendar:string;
 }
 
-const formModel = ref<RegisterModel>({
-  username:'',
-  password:'',
-  className: '',
-  age: undefined,
-})
+const formModel = ref<RegisterModel>({})
 const formRef = ref();
+const isShowPicker = ref(false);
+const isShowCalendar = ref(false);
 
 const rules = ref({
-  username: [
-    { required: true, message: 'Username is required', trigger: 'blur' },
-    { min: 3, message: 'Username must be at least 3 characters' },
+  input: [
+    { required: true, min:3, message: 'must be at least 3 characters'},
   ],
-  age: [
-    { type: 'number', required: true, message: 'Age is required' },
-    { type: 'number', min: 18, message: 'Age must be at least 18' },
+  checkbox: [
+    { type: 'boolean', required: true, message: 'checkbox is required' },
   ],
+  radio: [
+    { type: 'number', required: true, message: 'radio is required' },
+  ],
+  picker:[
+    { required: true, message: 'must be at least 3 characters'},
+  ],
+  calendar:[
+    { required: true, message: 'calendar is required'},
+  ]
 });
 
 const handSubmit = async ()=>{

@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:46:34
- * @LastEditTime: 2024-12-21 14:47:11
+ * @LastEditTime: 2024-12-21 16:24:34
  * @Description: 请填写简介
 -->
 <!-- form-item -->
@@ -11,10 +11,13 @@
     :error-message="errorMessage"
     :rules="rules"
     :required="required"
+    autosize
     :size="size"
   >
   <template #input>
-    <slot :validate="validate"></slot>
+    <view >
+      <slot :validate="validate"></slot>
+    </view>
   </template>
   </van-field>
 </template>
@@ -41,7 +44,7 @@ const { name, required } = toRefs(props);
 
 // 获取字段的错误信息
 const errorMessage = computed(() => {
-  const errors = formState.value.errors[name.value] || [];
+  const errors = formState.value.errors?.[name.value] || [];
   return errors.length? errors[0].message : '';
 });
 const isError = computed(() => errorMessage.value.length > 0);
@@ -53,5 +56,4 @@ const validate = ()=>{
 </script>
 
 <style lang="scss" scoped>
-
 </style>

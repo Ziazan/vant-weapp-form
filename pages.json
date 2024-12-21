@@ -48,9 +48,21 @@
 			"van-card":"/wxcomponents/node-modules/@vant/weapp/dist/card",
 			"van-button":"/wxcomponents/node-modules/@vant/weapp/dist/button",
 			"van-tab": "/wxcomponents/node-modules/@vant/weapp/dist/tab",
-			  "van-tabs": "/wxcomponents/node-modules/@vant/weapp/dist/tabs",
-			  "van-sticky": "/wxcomponents/node-modules/@vant/weapp/dist/sticky",
-				"van-field":"/wxcomponents/node-modules/@vant/weapp/dist/field"
+			"van-tabs": "/wxcomponents/node-modules/@vant/weapp/dist/tabs",
+			"van-sticky": "/wxcomponents/node-modules/@vant/weapp/dist/sticky",
+			"van-field":"/wxcomponents/node-modules/@vant/weapp/dist/field",
+			"van-switch":"/wxcomponents/node-modules/@vant/weapp/dist/switch",
+			"van-radio":"/wxcomponents/node-modules/@vant/weapp/dist/radio",
+			"van-radio-group":"/wxcomponents/node-modules/@vant/weapp/dist/radio-group",
+			"van-picker":"/wxcomponents/node-modules/@vant/weapp/dist/picker",
+			"van-picker-column":"/wxcomponents/node-modules/@vant/weapp/dist/picker-column",
+			"van-checkbox": "/wxcomponents/node-modules/@vant/weapp/dist/checkbox",
+			"van-checkbox-group": "/wxcomponents/node-modules/@vant/weapp/dist/checkbox-group",
+			"van-slider": "/wxcomponents/node-modules/@vant/weapp/dist/slider",
+			"van-stepper": "/wxcomponents/node-modules/@vant/weapp/dist/stepper",
+			"van-uploader": "/wxcomponents/node-modules/@vant/weapp/dist/uploader",
+			"van-calendar": "/wxcomponents/node-modules/@vant/weapp/dist/calendar",
+			"van-cell": "/wxcomponents/node-modules/@vant/weapp/dist/cell"
 		}
 	},
 	"tabBar": {
