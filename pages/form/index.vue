@@ -1,24 +1,23 @@
 <!--
  * @Date: 2024-12-21 12:48:01
- * @LastEditTime: 2024-12-21 17:47:31
+ * @LastEditTime: 2024-12-21 17:57:07
  * @Description: 请填写简介
 -->
 <!-- form -->
 <template>
   <div class="container" >
     <lc-form :model="formModel" :rules="rules" @submit="handSubmit" ref="formRef">
-      <lc-form-item name="input" label="input" required v-slot="{  }">
+      <lc-form-item name="input" label="input" required v-slot="{ validate }">
         <input  v-model="formModel.input" placeholder="自动获得焦点"/>
       </lc-form-item>
       <lc-form-item name="checkbox" label="checkbox" required v-slot="{ validate }">
          <van-checkbox :value="formModel.checkbox" @change="(event)=>{
           formModel.checkbox = event.detail
-          validate();
          }">复选框</van-checkbox>
       </lc-form-item>
       <!-- 直接监听change的变化 这里无法进行校验-->
       <lc-form-item name="picker" label="picker" required>
-        <template #default="{ validate }">
+        <template #default="{  }">
           <button @click="()=>isShowPicker = true">{{ formModel.picker || "请选择"}}></button>
         </template>
       </lc-form-item>
@@ -27,7 +26,6 @@
           :value="formModel.radio"
           @change="(event)=>{
             formModel.radio = event.detail
-            validate();
           }"
           direction="horizontal"
         >
@@ -54,7 +52,6 @@
       </lc-form-item>
       <lc-form-item name="calendar" label="calendar" required v-slot="{ validate }">
         <button @click="()=>isShowCalendar = true">{{ formModel.calendar || "请选择日期"}}></button>
-        <!-- <van-cell title="选择单个日期" :value="formModel.calendar" @click="()=>isShowCalendar = true" /> -->
       </lc-form-item>
       <button @click="handSubmit">提交</button>
     </lc-form>
