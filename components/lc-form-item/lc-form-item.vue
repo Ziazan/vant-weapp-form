@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:46:34
- * @LastEditTime: 2024-12-22 00:54:43
+ * @LastEditTime: 2024-12-22 01:11:55
  * @Description: 请填写简介
 -->
 <!-- form-item -->
@@ -61,9 +61,8 @@ const validateMessage = ref<string>('');
 const getRules = ()=>{
   let _formRules = toRaw(formRules.value);
   const selfRules = toRaw(propsRules.value) || [];
-  const requiredRule = required.value !== undefined ? { required: !!required.value } : [];
-  _formRules = _formRules ? _formRules[name.value] : [];
-
+  const requiredRule = required.value !== undefined && required.value !== false ? { required: !!required.value } : [];
+  _formRules = _formRules ? _formRules[name.value] || [] : [];
   return [].concat(selfRules).concat(requiredRule).concat(_formRules) as RuleItemType[];
 }
 

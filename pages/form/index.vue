@@ -1,6 +1,6 @@
 <!--
  * @Date: 2024-12-21 12:48:01
- * @LastEditTime: 2024-12-22 00:16:19
+ * @LastEditTime: 2024-12-22 01:10:56
  * @Description: 请填写简介
 -->
 <!-- form -->
@@ -40,7 +40,7 @@
         </van-radio-group>
       </lc-form-item>
       <lc-form-item name="uploader" label="uploader" v-slot="{ validate }">
-        <van-uploader :file-list="formModel.uploader" @afterRead="()=>{
+        <van-uploader :file-list="formModel.uploader"  @afterRead="()=>{
           formModel.uploader = [
             {
               url: 'https://img.yzcdn.cn/vant/leaf.jpg',
@@ -53,7 +53,6 @@
               deletable: true,
             }
           ]
-          validate();
         }" />
       </lc-form-item>
       <lc-form-item name="calendar" label="calendar" required v-slot="{ validate }">
@@ -79,7 +78,7 @@
     }" @confirm="(event)=>{
       isShowCalendar = false
       formModel.calendar =  formatDate(event.detail);
-      formRef.validate('calendar',(message)=>{
+      formRef.validateField('calendar',(message)=>{
         console.log('%c [ message ]-64', 'font-size:13px; background:pink; color:#bf2c9f;', message)
       });
     }" />
